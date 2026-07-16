@@ -33,7 +33,7 @@
                 query: query.value,
             })
         });
-        urlDisplay.textContent = "Searching...";
+        results.textContent = "Searching...";
         if(!res.ok){
             var backend;
             try{
@@ -45,10 +45,11 @@
             throw new Error(backendData.error || `HTTP error ${res.status}`);
         }
         const newUrl = await res.json();
-        if(!newUrl){
+        if(!newUrl.query_results){
             throw new Error("No URL recieved");
         }
-        console.log("response: ", newUrl);
+        console.log("response: ", newUrl.query_results);
+        let query_array = [];
         //results.innerHTML = `<a href="${newUrl.short_url}" target="_blank">${newUrl.short_url}</a>`;
     }
     catch(err){
