@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Mini Search Engine</title>
+    <style>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mini Search Engine</h1>
+        <form id="querySubmit">
+          <label>Enter Query:</label>
+          <input type="text" name="query" required />
+          <button type="submit">Search</button>
+        </form>
+        <div id="results">Search results show here.</div>
+    </div>
+</body>
+<script>
+  const querySubmit = document.getElementById("querySubmit");
+  const results = document.getElementById("results");
+  const domainUrl = "http://127.0.0.1:5001";
+  querySubmit.addEventListener("submit", async (a) => {
+    a.preventDefault();
+    results.textContent = "Loading..."
+    const query = querySubmit.elements["query"];
+    try {
+        const res = await fetch(domainUrl + "/search", {
+            // NEW FEATURE: MAKE ERROR MESSAGES VISIBLE ON FRONTEND
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                query: query.value,
+            })
+        });
+        urlDisplay.textContent = "Searching...";
+        if(!res.ok){
+            var backend;
+            try{
+            backendData = await res.json();
+            }
+            catch{
+                backendData = {};
+            }
+            throw new Error(backendData.error || `HTTP error ${res.status}`);
+        }
+        const newUrl = await res.json();
+        if(!newUrl){
+            throw new Error("No URL recieved");
+        }
+        console.log("response: ", newUrl);
+        //results.innerHTML = `<a href="${newUrl.short_url}" target="_blank">${newUrl.short_url}</a>`;
+    }
+    catch(err){
+        console.error("Error during search: ", err.message)
+        results.textContent = `Error during generation: ${err.message}`
+    }
+  });
+</script>
+</html>
