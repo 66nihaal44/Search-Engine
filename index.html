@@ -49,7 +49,8 @@
             throw new Error("No URL recieved");
         }
         console.log("response: ", newUrl.query_results);
-        let query_array = [];
+        let queryArray = Object.entries(newUrl.query_results);
+        queryArray.sort;
         //results.innerHTML = `<a href="${newUrl.short_url}" target="_blank">${newUrl.short_url}</a>`;
     }
     catch(err){
