@@ -60,10 +60,10 @@
         }
         for(let i = 0; i < 10 && i < queryArray.length; i++){
             let result = document.createElement('li');
-            result.textContent = queryArray[i][0];
+            //result.textContent = queryArray[i][0];
+            result.innerHTML = `<a href="${queryArray[i][0]}" target="_blank">${queryArray[i][0]}</a>`;
             resultsList.appendChild(result);
         }
-        //results.innerHTML = `<a href="${newUrl.short_url}" target="_blank">${newUrl.short_url}</a>`;
     }
     catch(err){
         console.error("Error during search: ", err.message)
