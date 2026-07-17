@@ -13,19 +13,19 @@
           <input type="text" name="query" required />
           <button type="submit">Search</button>
         </form>
-        <div id="results"> <span>Search results show here.</span>
+        <div id="results"> <span id="resultsText">Search results show here.</span>
             <ul id="resultsList"></ul>
         </div>
     </div>
 </body>
 <script>
   const querySubmit = document.getElementById("querySubmit");
-  const results = document.getElementById("results");
+  const resultsText = document.getElementById("resultsText");
   const resultsList = document.getElementById("resultsList");
   const domainUrl = "http://127.0.0.1:5001";
   querySubmit.addEventListener("submit", async (a) => {
     a.preventDefault();
-    results.textContent = "Loading..."
+    resultsText.textContent = "Loading..."
     const query = querySubmit.elements["query"];
     try {
         const res = await fetch(domainUrl + "/search", {
@@ -36,7 +36,7 @@
                 query: query.value,
             })
         });
-        results.textContent = "Searching...";
+        resultsText.textContent = "Searching...";
         if(!res.ok){
             var backend;
             try{
@@ -52,9 +52,12 @@
             throw new Error("No URL recieved");
         }
         console.log("response: ", newUrl.query_results);
-        results.textContent = "Results:";
+        resultsText.textContent = "Results:";
         let queryArray = Object.entries(newUrl.query_results);
         queryArray.sort(function (a, b) { return b[1] - a[1] });
+        while (resultsList.firstChild) {
+          resultsList.removeChild(resultsList.firstChild);
+        }
         for(let i = 0; i < 10 && i < queryArray.length; i++){
             let result = document.createElement('li');
             result.textContent = queryArray[i][0];
