@@ -13,12 +13,15 @@
           <input type="text" name="query" required />
           <button type="submit">Search</button>
         </form>
-        <div id="results">Search results show here.</div>
+        <div id="results"> <span>Search results show here.</span>
+            <ul id="resultsList"></ul>
+        </div>
     </div>
 </body>
 <script>
   const querySubmit = document.getElementById("querySubmit");
   const results = document.getElementById("results");
+  const resultsList = document.getElementById("resultsList");
   const domainUrl = "http://127.0.0.1:5001";
   querySubmit.addEventListener("submit", async (a) => {
     a.preventDefault();
@@ -49,8 +52,14 @@
             throw new Error("No URL recieved");
         }
         console.log("response: ", newUrl.query_results);
+        results.textContent = "Results:";
         let queryArray = Object.entries(newUrl.query_results);
-        queryArray.sort;
+        queryArray.sort(function (a, b) { return b[1] - a[1] });
+        for(let i = 0; i < 10 && i < queryArray.length; i++){
+            let result = document.createElement('li');
+            result.textContent = queryArray[i][0];
+            resultsList.appendChild(result);
+        }
         //results.innerHTML = `<a href="${newUrl.short_url}" target="_blank">${newUrl.short_url}</a>`;
     }
     catch(err){
