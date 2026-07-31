@@ -76,7 +76,8 @@ def search_api():
   query_results = search(query, reverse_index)
   return jsonify({"query_results": query_results})
 if __name__ == "__main__":
-  app.run(debug=True)
+  port = int(os.environ.get("PORT", 5000))
+  app.run(host="0.0.0.0", port=port)
 #print(query_results)
 #print('\n', len(query_results))
 #print('\n', len(reverse_index))
