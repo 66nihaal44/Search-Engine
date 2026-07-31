@@ -11,6 +11,7 @@ from sqlalchemy import select
 from sqlclass import Page
 from engine import SessionLocal
 from ranker import bm25
+import os
 
 stemmer = PorterStemmer()
 stop_words = set(stopwords.words('english'))
