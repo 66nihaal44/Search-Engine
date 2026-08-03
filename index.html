@@ -24,6 +24,10 @@
   const querySubmit = document.getElementById("querySubmit");
   const resultsText = document.getElementById("resultsText");
   const resultsList = document.getElementById("resultsList");
+  const prev = document.getElementById("prev");
+  const next = document.getElementById("next");
+  let maxResults = 0;
+  let queryArray;
   const domainUrl = "https://search-engine-api-qwkq.onrender.com";
   querySubmit.addEventListener("submit", async (a) => {
     a.preventDefault();
@@ -55,22 +59,55 @@
         }
         console.log("response: ", newUrl.query_results);
         resultsText.textContent = "Results:";
-        let queryArray = Object.entries(newUrl.query_results);
-        queryArray.sort(function (a, b) { return b[1] - a[1] });
-        while (resultsList.firstChild) {
-          resultsList.removeChild(resultsList.firstChild);
-        }
-        for(let i = 0; i < 10 && i < queryArray.length; i++){
-            let result = document.createElement('li');
-            //result.textContent = queryArray[i][0];
-            result.innerHTML = `<a href="${queryArray[i][0]}" target="_blank">${queryArray[i][0]}</a>`;
-            resultsList.appendChild(result);
-        }
+        queryArray = Object.entries(newUrl.query_results);
+      queryArray.sort(function (a, b) { return b[1] - a[1] });
+      updateList(resultsList, queryArray, 0);
+      maxResults = queryArray.length;
+      prev.disabled = true;
+      if (queryArray.length > 10) {
+        next.disabled = false;
+      }
+      else {
+        next.disabled = true;
+      }
     }
     catch(err){
         console.error("Error during search: ", err.message)
         results.textContent = `Error during generation: ${err.message}`
     }
   });
+  let placeResults = 0;
+  next.addEventListener("click", function () {
+    placeResults += 10;
+    updateList(resultsList, queryArray, placeResults);
+    if (queryArray.length > placeResults + 10) {
+      next.disabled = false;
+    }
+    else {
+      next.disabled = true;
+    }
+    prev.disabled = false;
+  });
+  prev.addEventListener("click", function () {
+    placeResults -= 10;
+    updateList(resultsList, queryArray, placeResults);
+    if (placeResults >= 10) {
+      prev.disabled = false;
+    }
+    else {
+      prev.disabled = true;
+    }
+    next.disabled = false;
+  });
+  function updateList(resultsList, queryArray, placeResults) {
+    while (resultsList.firstChild) {
+      resultsList.removeChild(resultsList.firstChild);
+    }
+    for (let i = placeResults; i < placeResults + 10 && i < queryArray.length; i++) {
+      let result = document.createElement('li');
+      result.innerHTML = `<a href="${queryArray[i][0]}" target="_blank">${queryArray[i][0]}</a>`;
+      resultsList.appendChild(result);
+    }
+  }
 </script>
 </html>
