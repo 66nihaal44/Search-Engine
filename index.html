@@ -3,22 +3,36 @@
 <head>
     <title>NIU Search Engine</title>
     <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.5;
+        background: lightgray;
+      }
+      .container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>NIU Search Engine</h1>
-        <form id="querySubmit">
-          <label>Enter Query:</label>
-          <input type="text" name="query" required />
-          <button type="submit">Search</button>
-        </form>
-        <div id="results"> <span id="resultsText">Search results show here.</span>
-            <ul id="resultsList"></ul>
-            <button class="resultNav" id="prev" disabled>Previous</button><button class="resultNav" id="next" disabled>Next</button>
-        </div>
+  <div class="container">
+    <h1>NIU Search Engine</h1>
+    <form id="querySubmit">
+      <label>Enter Query:</label>
+      <input type="text" name="query" required />
+      <button type="submit">Search</button>
+    </form>
+    <div id="results">
+      <span id="resultsText">Search results show here.</span>
+      <ul id="resultsList"></ul>
+      <button class="resultNav" id="prev" hidden>Previous</button><button class="resultNav" id="next" hidden>Next</button>
     </div>
     <p>Note: First use in a session may cause some delay.</p>
+  </div>
 </body>
 <script>
   const querySubmit = document.getElementById("querySubmit");
@@ -63,6 +77,8 @@
       queryArray.sort(function (a, b) { return b[1] - a[1] });
       updateList(resultsList, queryArray, 0);
       maxResults = queryArray.length;
+      prev.hidden = false;
+      next.hidden = false;
       prev.disabled = true;
       if (queryArray.length > 10) {
         next.disabled = false;
