@@ -81,7 +81,7 @@
         resultsText.textContent = "Results:";
         queryArray = Object.entries(newUrl.query_results);
       queryArray.sort(function (a, b) { return b[1] - a[1] });
-      updateList(resultsList, queryArray, 0);
+      updateList(resultsList, queryArray, 0); // add titles
       maxResults = queryArray.length;
       prev.hidden = false;
       next.hidden = false;
