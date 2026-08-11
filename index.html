@@ -48,6 +48,7 @@
   const next = document.getElementById("next");
   let maxResults = 0;
   let queryArray;
+  let pageTitles;
   const domainUrl = "https://search-engine-api-qwkq.onrender.com";
   querySubmit.addEventListener("submit", async (a) => {
     a.preventDefault();
@@ -80,6 +81,8 @@
         console.log("response: ", newUrl.query_results);
         resultsText.textContent = "Results:";
         queryArray = Object.entries(newUrl.query_results);
+        pageTitles = newUrl.page_titles;
+        console.log(pageTitles);
       queryArray.sort(function (a, b) { return b[1] - a[1] });
       updateList(resultsList, queryArray, 0); // add titles
       maxResults = queryArray.length;
