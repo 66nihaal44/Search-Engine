@@ -82,7 +82,7 @@
         resultsText.textContent = "Results:";
         queryArray = Object.entries(newUrl.query_results);
         pageTitles = newUrl.page_titles;
-        console.log(pageTitles);
+        console.log("pageTitles:", pageTitles);
       queryArray.sort(function (a, b) { return b[1] - a[1] });
       updateList(resultsList, queryArray, 0); // add titles
       maxResults = queryArray.length;
