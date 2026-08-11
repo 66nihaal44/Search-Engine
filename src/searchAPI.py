@@ -17,6 +17,7 @@ stemmer = PorterStemmer()
 stop_words = set(stopwords.words('english'))
 reverse_index = defaultdict(dict) # index for words and pages
 dl = {} # dict of html content lengths
+page_titles = {} # dict of page titles
 
 def token_words(words, stemmer, stop_words):
   tokens = [stemmer.stem(word) for word in words]
