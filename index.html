@@ -84,7 +84,7 @@
         pageTitles = newUrl.page_titles;
         console.log("pageTitles:", pageTitles);
       queryArray.sort(function (a, b) { return b[1] - a[1] });
-      updateList(resultsList, queryArray, 0); // add titles
+      updateList(resultsList, queryArray, pageTitles, 0); // add titles
       maxResults = queryArray.length;
       prev.hidden = false;
       next.hidden = false;
@@ -104,7 +104,7 @@
   let placeResults = 0;
   next.addEventListener("click", function () {
     placeResults += 10;
-    updateList(resultsList, queryArray, placeResults);
+    updateList(resultsList, queryArray, pageTitles, placeResults);
     if (queryArray.length > placeResults + 10) {
       next.disabled = false;
     }
@@ -115,7 +115,7 @@
   });
   prev.addEventListener("click", function () {
     placeResults -= 10;
-    updateList(resultsList, queryArray, placeResults);
+    updateList(resultsList, queryArray, pageTitles, placeResults);
     if (placeResults >= 10) {
       prev.disabled = false;
     }
@@ -124,13 +124,13 @@
     }
     next.disabled = false;
   });
-  function updateList(resultsList, queryArray, placeResults) {
+  function updateList(resultsList, queryArray, pageTitles, placeResults) {
     while (resultsList.firstChild) {
       resultsList.removeChild(resultsList.firstChild);
     }
     for (let i = placeResults; i < placeResults + 10 && i < queryArray.length; i++) {
       let result = document.createElement('li');
-      result.innerHTML = `<a href="${queryArray[i][0]}" target="_blank">${queryArray[i][0]}</a>`;
+      result.innerHTML = `<a href="${queryArray[i][0]}" target="_blank">${ pageTitles[queryArray[i][0]] }</a>`;
       resultsList.appendChild(result);
     }
   }
