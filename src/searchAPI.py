@@ -55,10 +55,11 @@ def add_to_index(URL, textcontent, reverse_index, stop_words):
 
 session = SessionLocal()
 try:
-  statement = select(Page.url, Page.textcontent)
+  statement = select(Page.url, Page.textcontent, Page.title)
   page_text = session.execute(statement).all()
   avdl = 0 # track average document length
   for row in page_text:
+    page_titles[row[1]] = row[2]
     dl[row[0]] = len(row[1]) # add to document length dict
     add_to_index(row[0], row[1], reverse_index, stop_words)
     avdl += len(row[1]) / len(page_text) # avdl
@@ -75,12 +76,7 @@ def search_api():
     return # error message here
   query = data["query"]
   query_results = search(query, reverse_index)
-  return jsonify({"query_results": query_results})
+  return jsonify({"query_results": query_results, "page_titles": page_titles})
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 5000))
   app.run(host="0.0.0.0", port=port)
-#print(query_results)
-#print('\n', len(query_results))
-#print('\n', len(reverse_index))
-#print("Longest:", sorted(reverse_index.items(), key= lambda x: len(x[0]), reverse=True)[:20])
-#print("First 100:", list(reverse_index.keys())[:100])
