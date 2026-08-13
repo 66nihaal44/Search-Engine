@@ -10,12 +10,14 @@ from sqlalchemy import select
 nltk.download('stopwords')
 from sqlclass import Page
 from engine import engine, SessionLocal
+from datetime import timedelta
+from ratelimit import limits, sleep_and_retry
 
 user_agent = "MiniCrawler"
 robots_websites = {}
 stemmer = PorterStemmer() 
 
-def is_valid_url(url): # plan making crawling async
+def is_valid_url(url):
   parsed = urlsplit(url)
   return (parsed.scheme in ("http", "https") and 
          parsed.netloc and
@@ -30,6 +32,8 @@ def check_robots(site):
     print("RobotFileParser Error:", e)
   return parser_robots
 
+@sleep_and_retry
+@limits(calls=1, period=timedelta(seconds=1).total_seconds())
 def crawl(URL, crawled_urls, robots_websites, domain = None, i = 0):
   """if "text" in requests.head(URL).headers['Content-Type']:
     print("True")
