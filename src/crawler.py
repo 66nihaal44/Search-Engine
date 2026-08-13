@@ -15,7 +15,7 @@ user_agent = "MiniCrawler"
 robots_websites = {}
 stemmer = PorterStemmer() 
 
-def is_valid_url(url):
+def is_valid_url(url): # plan making crawling async
   parsed = urlsplit(url)
   return (parsed.scheme in ("http", "https") and 
          parsed.netloc and
