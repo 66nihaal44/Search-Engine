@@ -93,14 +93,15 @@ def crawl(URL, crawled_urls, robots_websites, domain = None, i = 0):
   textcontent = re.sub(r'\d+', '', textcontent)
   textcontent = re.sub(r'[^\w\s]' ,'', textcontent)
   title = str(bsoup.find('title').string) if bsoup.find('title') else None
-  print(title)
+  description = str(bsoup.find('meta', name="description").string) if bsoup.find('meta', name="description") else None
+  print("title, description: ", title, description)
   # add title and textcontent to sql
   session = SessionLocal()
   try:
     statement = select(Page).filter_by(url=URL)
     exists = session.scalars(statement).first()
     if not exists:
-      page = Page(url=URL, title=title, textcontent = textcontent)
+      page = Page(url=URL, title=title, textcontent = textcontent, description = description)
       session.add(page)
       session.commit()
   finally:
