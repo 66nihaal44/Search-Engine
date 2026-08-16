@@ -6,5 +6,6 @@ class Page(Base):
   url = Column(String, primary_key=True)
   title = Column(String, nullable=False)
   textcontent = Column(String, nullable=False)
+  description = Column(String, nullable=True)
 
 init_db()
