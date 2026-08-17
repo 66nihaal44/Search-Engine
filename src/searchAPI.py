@@ -18,6 +18,7 @@ stop_words = set(stopwords.words('english'))
 reverse_index = defaultdict(dict) # index for words and pages
 dl = {} # dict of html content lengths
 page_titles = {} # dict of page titles
+descriptions = {} # dict of meta descriptions
 
 def token_words(words, stemmer, stop_words):
   tokens = [stemmer.stem(word) for word in words]
@@ -56,11 +57,12 @@ def add_to_index(URL, textcontent, reverse_index, stop_words):
 
 session = SessionLocal()
 try:
-  statement = select(Page.url, Page.textcontent, Page.title)
+  statement = select(Page.url, Page.textcontent, Page.title, page.description)
   page_text = session.execute(statement).all()
   avdl = 0 # track average document length
   for row in page_text:
-    page_titles[row[0]] = row[2]
+    page_titles[row[1]] = row[2]
+    descriptions[row[1]] = row[3]
     dl[row[0]] = len(row[1]) # add to document length dict
     add_to_index(row[0], row[1], reverse_index, stop_words)
     avdl += len(row[1]) / len(page_text) # avdl
