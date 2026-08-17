@@ -56,36 +56,36 @@
     resultsText.textContent = "Loading..."
     const query = querySubmit.elements["query"];
     try {
-        const res = await fetch(domainUrl + "/search", {
-            // NEW FEATURE: MAKE ERROR MESSAGES VISIBLE ON FRONTEND
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                query: query.value,
-            })
-        });
-        resultsText.textContent = "Searching...";
-        if(!res.ok){
-            var backend;
-            try{
-            backendData = await res.json();
-            }
-            catch{
-                backendData = {};
-            }
-            throw new Error(backendData.error || `HTTP error ${res.status}`);
+      const res = await fetch(domainUrl + "/search", {
+        // NEW FEATURE: MAKE ERROR MESSAGES VISIBLE ON FRONTEND
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: query.value,
+        })
+      });
+      resultsText.textContent = "Searching...";
+      if (!res.ok) {
+        var backend;
+        try {
+          backendData = await res.json();
         }
-        const newUrl = await res.json();
-        if(!newUrl.query_results){
-            throw new Error("No URL recieved");
+        catch {
+          backendData = {};
         }
-        console.log("response: ", newUrl.query_results);
-        resultsText.textContent = "Results:";
-        queryArray = Object.entries(newUrl.query_results);
-        pageTitles = newUrl.page_titles;
-        descriptions = newUrl.descriptions;
-        console.log("pageTitles:", pageTitles);
-        console.log("descriptions:", descriptions);
+        throw new Error(backendData.error || `HTTP error ${res.status}`);
+      }
+      const newUrl = await res.json();
+      if (!newUrl.query_results) {
+        throw new Error("No URL recieved");
+      }
+      console.log("response: ", newUrl.query_results);
+      resultsText.textContent = "Results:";
+      queryArray = Object.entries(newUrl.query_results);
+      pageTitles = newUrl.page_titles;
+      descriptions = newUrl.descriptions;
+      console.log("pageTitles:", pageTitles);
+      console.log("descriptions:", descriptions);
       queryArray.sort(function (a, b) { return b[1] - a[1] });
       updateList(resultsList, queryArray, pageTitles, descriptions, 0); // add titles
       maxResults = queryArray.length;
@@ -99,9 +99,9 @@
         next.disabled = true;
       }
     }
-    catch(err){
-        console.error("Error during search: ", err.message)
-        results.textContent = `Error during generation: ${err.message}`
+    catch (err) {
+      console.error("Error during search: ", err.message)
+      results.textContent = `Error during generation: ${err.message}`
     }
   });
   let placeResults = 0;
@@ -133,7 +133,7 @@
     }
     for (let i = placeResults; i < placeResults + 10 && i < queryArray.length; i++) {
       let result = document.createElement('li');
-      result.innerHTML = `<a href="${queryArray[i][0]}" target="_blank">${ pageTitles[queryArray[i][0]] }</a>`;
+      result.innerHTML = `<a href="${queryArray[i][0]}" target="_blank">${pageTitles[queryArray[i][0]]}</a>`;
       resultsList.appendChild(result);
       let description = document.createElement('li');
       description.textContent = descriptions[queryArray[i][0]];
