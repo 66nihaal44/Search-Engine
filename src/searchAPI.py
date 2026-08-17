@@ -57,7 +57,7 @@ def add_to_index(URL, textcontent, reverse_index, stop_words):
 
 session = SessionLocal()
 try:
-  statement = select(Page.url, Page.textcontent, Page.title, page.description)
+  statement = select(Page.url, Page.textcontent, Page.title, Page.description)
   page_text = session.execute(statement).all()
   avdl = 0 # track average document length
   for row in page_text:
