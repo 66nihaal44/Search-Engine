@@ -49,6 +49,7 @@
   let maxResults = 0;
   let queryArray;
   let pageTitles;
+  let descriptions;
   const domainUrl = "https://search-engine-api-qwkq.onrender.com";
   querySubmit.addEventListener("submit", async (a) => {
     a.preventDefault();
@@ -82,9 +83,11 @@
         resultsText.textContent = "Results:";
         queryArray = Object.entries(newUrl.query_results);
         pageTitles = newUrl.page_titles;
+        descriptions = newUrl.descriptions;
         console.log("pageTitles:", pageTitles);
+        console.log("descriptions:", descriptions);
       queryArray.sort(function (a, b) { return b[1] - a[1] });
-      updateList(resultsList, queryArray, pageTitles, 0); // add titles
+      updateList(resultsList, queryArray, pageTitles, descriptions, 0); // add titles
       maxResults = queryArray.length;
       prev.hidden = false;
       next.hidden = false;
@@ -104,7 +107,7 @@
   let placeResults = 0;
   next.addEventListener("click", function () {
     placeResults += 10;
-    updateList(resultsList, queryArray, pageTitles, placeResults);
+    updateList(resultsList, queryArray, pageTitles, descriptions, placeResults);
     if (queryArray.length > placeResults + 10) {
       next.disabled = false;
     }
@@ -115,7 +118,7 @@
   });
   prev.addEventListener("click", function () {
     placeResults -= 10;
-    updateList(resultsList, queryArray, pageTitles, placeResults);
+    updateList(resultsList, queryArray, pageTitles, descriptions, placeResults);
     if (placeResults >= 10) {
       prev.disabled = false;
     }
@@ -124,7 +127,7 @@
     }
     next.disabled = false;
   });
-  function updateList(resultsList, queryArray, pageTitles, placeResults) {
+  function updateList(resultsList, queryArray, pageTitles, descriptions, placeResults) {
     while (resultsList.firstChild) {
       resultsList.removeChild(resultsList.firstChild);
     }
@@ -132,6 +135,9 @@
       let result = document.createElement('li');
       result.innerHTML = `<a href="${queryArray[i][0]}" target="_blank">${ pageTitles[queryArray[i][0]] }</a>`;
       resultsList.appendChild(result);
+      let description = document.createElement('li');
+      description.textContent = descriptions[queryArray[i][0]];
+      resultsList.appendChild(description);
     }
   }
 </script>
