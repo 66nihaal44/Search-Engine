@@ -61,8 +61,8 @@ try:
   page_text = session.execute(statement).all()
   avdl = 0 # track average document length
   for row in page_text:
-    page_titles[row[1]] = row[2]
-    descriptions[row[1]] = row[3]
+    page_titles[row[0]] = row[2]
+    descriptions[row[0]] = row[3]
     dl[row[0]] = len(row[1]) # add to document length dict
     add_to_index(row[0], row[1], reverse_index, stop_words)
     avdl += len(row[1]) / len(page_text) # avdl
