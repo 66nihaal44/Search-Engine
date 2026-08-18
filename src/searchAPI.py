@@ -79,7 +79,7 @@ def search_api():
     return # error message here
   query = data["query"]
   query_results = search(query, reverse_index)
-  return jsonify({"query_results": query_results, "page_titles": page_titles})
+  return jsonify({"query_results": query_results, "page_titles": page_titles, "descriptions": descriptions})
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 5000))
   app.run(host="0.0.0.0", port=port)
