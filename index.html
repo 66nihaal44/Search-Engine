@@ -133,11 +133,9 @@
     }
     for (let i = placeResults; i < placeResults + 10 && i < queryArray.length; i++) {
       let result = document.createElement('li');
-      result.innerHTML = `<a href="${queryArray[i][0]}" target="_blank">${pageTitles[queryArray[i][0]]}</a>`;
+      result.innerHTML = `<a href="${queryArray[i][0]}" target="_blank">${pageTitles[queryArray[i][0]]}</a>
+                          <br/><a>${descriptions[queryArray[i][0]]}</a>`;
       resultsList.appendChild(result);
-      let description = document.createElement('li');
-      description.textContent = descriptions[queryArray[i][0]];
-      resultsList.appendChild(description);
     }
   }
 </script>
