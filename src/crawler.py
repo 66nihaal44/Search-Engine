@@ -106,6 +106,7 @@ def crawl(URL, crawled_urls, robots_websites, domain = None, i = 0):
       session.commit()
   except Exception as e:
     console.log("Error in SQL session:", e)
+    session.rollback()
   finally:
     session.close()
   if i < 3:
