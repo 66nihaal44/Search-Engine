@@ -104,6 +104,8 @@ def crawl(URL, crawled_urls, robots_websites, domain = None, i = 0):
       page = Page(url=URL, title=title, textcontent = textcontent, description = description)
       session.add(page)
       session.commit()
+  except Exception as e:
+    console.log("Error in SQL session:", e)
   finally:
     session.close()
   if i < 3:
