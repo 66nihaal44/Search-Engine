@@ -130,6 +130,7 @@
     next.disabled = false;
   });
   function updateList(resultsList, queryArray, pageTitles, descriptions, placeResults) {
+    resultsList.start = placeResults + 1;
     while (resultsList.firstChild) {
       resultsList.removeChild(resultsList.firstChild);
     }
