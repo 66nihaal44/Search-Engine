@@ -98,12 +98,9 @@ def crawl(URL, crawled_urls, robots_websites, domain = None, i = 0):
   # add title and textcontent to sql
   session = SessionLocal()
   try:
-    statement = select(Page).filter_by(url=URL)
-    exists = session.scalars(statement).first()
-    if not exists:
-      page = Page(url=URL, title=title, textcontent = textcontent, description = description)
-      session.add(page)
-      session.commit()
+    page = Page(url=URL, title=title, textcontent = textcontent, description = description)
+    session.add(page)
+    session.commit()
   except Exception as e:
     console.log("Error in SQL session:", e)
     session.rollback()
