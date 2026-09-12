@@ -37,7 +37,7 @@ def search(query, index):
       if wordnet.synonyms(stem_word):
         for synlist in wordnet.synonyms(stem_word):
           for synon in synlist:
-            url_score = bm25(index, stem_word, dl, avdl)
+            url_score = bm25(index, synon, dl, avdl)
             for url, score in url_score.items():
               search_results[url] += score
       else:
