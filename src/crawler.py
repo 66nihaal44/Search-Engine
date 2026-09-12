@@ -6,12 +6,14 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlsplit, urlunsplit
 from urllib.robotparser import RobotFileParser
 from nltk import PorterStemmer
-from sqlalchemy import select
+from sqlalchemy import select, update
 nltk.download('stopwords')
 from sqlclass import Page
 from engine import engine, SessionLocal
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
 from ratelimit import limits, sleep_and_retry
+from hashlib import sha256
+from sqlalchemy.sql import func
 
 user_agent = "MiniCrawler"
 robots_websites = {}
@@ -32,8 +34,8 @@ def check_robots(site):
     print("RobotFileParser Error:", e)
   return parser_robots
 
-@sleep_and_retry
-@limits(calls=1, period=timedelta(seconds=1).total_seconds())
+#@sleep_and_retry
+#@limits(calls=1, period=timedelta(seconds=1).total_seconds())
 def crawl(URL, crawled_urls, robots_websites, domain = None, i = 0):
   """if "text" in requests.head(URL).headers['Content-Type']:
     print("True")
@@ -92,21 +94,35 @@ def crawl(URL, crawled_urls, robots_websites, domain = None, i = 0):
   textcontent = textcontent.lower()
   textcontent = re.sub(r'\d+', '', textcontent)
   textcontent = re.sub(r'[^\w\s]' ,'', textcontent)
-  title = str(bsoup.find('title').string) if bsoup.find('title') else None
-  description = str(bsoup.find('meta', name="description").string) if bsoup.find('meta', name="description") else None
-  print("title, description: ", title, description)
-  # add title and textcontent to sql
-  session = SessionLocal()
+  title = str(bsoup.find('title').string) if bsoup.find('title') else URL # make URL title if no html title
+  description = (str(bsoup.find('meta', {"name": "description"}).get("content")) if bsoup.find('meta', {"name": "description"}) else
+                str(bsoup.find('meta', {"name": "og:description"}).get("content")) if bsoup.find('meta', {"name": "og:description"}) else None)
+  print("title: ", title)
+  print("description: ", description)
+  hashcontent = sha256( textcontent.encode("utf-8") ).digest()
+  #print("hashcontent: ", hashcontent)
+  session = SessionLocal() 
   try:
-    page = Page(url=URL, title=title, textcontent = textcontent, description = description)
-    session.add(page)
-    session.commit()
+    statement = select(Page).filter_by(url=URL)
+    exists = session.scalars(statement).first()
+    if not exists:
+      page = Page(url=URL, title=title, textcontent=textcontent, description=description, hashcontent=hashcontent)
+      session.add(page)
+      session.commit()
+    if exists:
+      print("Check if same")
+      if hashcontent != exists.hashcontent or description != exists.description:
+        statement2 = ( update(page)
+                  .where(Page.url.in_([URL]))
+                  .values(title=title, textcontent=textcontent, description=description, lastcrawled=func.now(), hashcontent=hashcontent)
+        ) # add update to lastcrawled
+        session.execute(statement2)
   except Exception as e:
-    console.log("Error in SQL session:", e)
+    print("Error in SQL session:", e)
     session.rollback()
   finally:
     session.close()
-  if i < 3:
+  if i < 5:
     for a in bsoup.find_all('a', href=True):
       # code to add a['href'] to table
       # fix incomplete urls
