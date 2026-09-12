@@ -6,6 +6,7 @@ from collections import defaultdict
 import nltk
 from nltk import PorterStemmer
 nltk.download('stopwords')
+nltk.download('wordnet')
 from nltk.corpus import stopwords, wordnet
 from sqlalchemy import select
 from sqlclass import Page
