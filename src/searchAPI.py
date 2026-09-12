@@ -33,9 +33,16 @@ def search(query, index):
   for word in query.split():
     if word not in stop_words:
       stem_word = stemmer.stem(word)
-      url_score = bm25(index, stem_word, dl, avdl)
-      for url, score in url_score.items():
-        search_results[url] += score
+      if wordnet.synonyms(stem_word):
+        for synlist in wordnet.synonyms(stem_word):
+          for synon in synlist:
+            url_score = bm25(index, stem_word, dl, avdl)
+            for url, score in url_score.items():
+              search_results[url] += score
+      else:
+        url_score = bm25(index, stem_word, dl, avdl)
+        for url, score in url_score.items():
+          search_results[url] += score
       #print("Query term:", stem_word)
       """if stem_word in reverse_index:
         for URL in reverse_index[stem_word]:
